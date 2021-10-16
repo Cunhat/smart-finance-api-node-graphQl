@@ -1,6 +1,8 @@
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const { buildSchema } = require("graphql");
+const mongoose = require("mongoose");
+const Category = require("./models/category");
 
 const app = express();
 
@@ -15,12 +17,21 @@ app.use(
   "/graphql",
   graphqlHTTP({
     schema: buildSchema(`
+        type Category {
+          _id: ID!
+          name: String!
+        }
+
+        input CategoryInput {
+          name: String!
+        }
+
         type RootQuery {
-            category: [String!]!
+            category: [Category!]!
         }
 
         type RootMutation {
-            createCategory(name: String): String
+            createCategory(categoryInput: CategoryInput): Category
         }
 
         schema {
@@ -30,15 +41,42 @@ app.use(
     `),
     rootValue: {
       category: () => {
-        return ["Sports", "Car"];
+        return Category.find()
+          .then((results) => {
+            return results.map((category) => {
+              return { ...category._doc, _id: category.id.toString() };
+            });
+          })
+          .catch((err) => {
+            throw err;
+          });
       },
       createCategory: (args) => {
-        const category = args.name;
-        return category;
+        const newCategory = new Category({
+          name: args.categoryInput.name,
+        });
+        return newCategory
+          .save()
+          .then((result) => {
+            return { ...result._doc, _id: result.id.toString() };
+          })
+          .catch((err) => {
+            console.log(err);
+            throw err;
+          });
       },
     },
     graphiql: true,
   })
 );
 
-app.listen(8081);
+mongoose
+  .connect(
+    `mongodb+srv://admin:admin@cluster0.a35sh.mongodb.net/smart-finance?retryWrites=true&w=majority`
+  )
+  .then(() => {
+    app.listen(8081);
+  })
+  .catch((err) => {
+    console.error(err);
+  });
