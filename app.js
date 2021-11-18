@@ -3,6 +3,9 @@ const { graphqlHTTP } = require("express-graphql");
 const { buildSchema } = require("graphql");
 const mongoose = require("mongoose");
 const Category = require("./models/category");
+const User = require("./models/user");
+const SubCategory = require("./models/subCategory");
+const Transaction = require("./models/transaction");
 
 const app = express();
 
@@ -22,16 +25,59 @@ app.use(
           name: String!
         }
 
+        type SubCategory {
+          _id: ID!
+          name: String!
+
+        }
+
+        type User {
+          _id: ID!
+          name: String!
+          email: String!
+          password: String!
+        }
+
+        type Transaction {
+          _id: ID!
+          name: String!
+          value: Float!
+          date: String!
+        }
+          
+
         input CategoryInput {
           name: String!
         }
 
+        input SubCategoryInput {
+          name: String!
+        }
+
+        input UserInput {
+          name: String!
+          email: String!
+          password: String!
+        }
+
+        input TransactionInput {
+          name: String!
+          value: Float!
+          date: String!
+        }
+
         type RootQuery {
             category: [Category!]!
+            subCategory: [SubCategory!]!
+            user: [User!]!
+            transaction: [Transaction!]!
         }
 
         type RootMutation {
             createCategory(categoryInput: CategoryInput): Category
+            createSubCategory(subCategoryInput: SubCategoryInput): SubCategory
+            createUser(userInput: UserInput): User
+            createTransaction(transactionInput: TransactionInput): Transaction
         }
 
         schema {
