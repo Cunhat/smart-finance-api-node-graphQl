@@ -2,6 +2,7 @@ const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const { buildSchema } = require("graphql");
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const Category = require("./models/category");
 const User = require("./models/user");
 const SubCategory = require("./models/subCategory");
@@ -108,6 +109,36 @@ app.use(
           })
           .catch((err) => {
             console.log(err);
+            throw err;
+          });
+      },
+      user: () => {
+        return User.find().then((results) => {
+          return results.map((user) => {
+            return { ...user._doc, password: "", _id: user.id.toString() };
+          });
+        });
+      },
+      createUser: (args) => {
+        return bcrypt
+          .hash(args.userInput.password, 12)
+          .then((hashedPassword) => {
+            const newUser = new User({
+              name: args.userInput.name,
+              email: args.userInput.email,
+              password: hashedPassword,
+            });
+            return newUser.save();
+          })
+          .then((result) => {
+            console.log(result);
+            return {
+              ...result._doc,
+              password: "",
+              _id: result.id.toString(),
+            };
+          })
+          .catch((err) => {
             throw err;
           });
       },
