@@ -10,11 +10,34 @@ const Transaction = require("./models/transaction");
 
 const app = express();
 
-const userId = "61a54671fe53b1b73b82195c";
+const userId = "61a68fccb954bb6bd486a57a";
+
+const categoriesPopulate = (categoryId) => {
+  console.log(categoryId);
+  return Category.find({ _id: { $in: categoryId } })
+    .then((categories) => {
+      return categories.map((category) => {
+        return {
+          ...category._doc,
+          _id: category._id,
+          user: userPopulate(category.userF),
+        };
+      });
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
 
 const userPopulate = (userId) => {
   return User.findById(userId).then((user) => {
-    return { ...user._doc, _id: user.id };
+    if (user) {
+      return {
+        ...user._doc,
+        _id: user.id,
+        categories: categoriesPopulate(user._doc.categories),
+      };
+    }
   });
 };
 
@@ -120,14 +143,17 @@ app.use(
         return newCategory
           .save()
           .then((result) => {
-            createCategory = { ...result._doc, _id: result.id.toString() };
+            createCategory = {
+              ...result._doc,
+              _id: result.id.toString(),
+              user: userPopulate(result._doc.user),
+            };
             return User.findById(userId);
           })
           .then((user) => {
             if (!user) {
               throw new Error("User doesnt exist");
             }
-            console.log(user);
             user.categories.push(createCategory);
             user.save();
             return createCategory;
@@ -140,7 +166,12 @@ app.use(
       user: () => {
         return User.find().then((results) => {
           return results.map((user) => {
-            return { ...user._doc, password: "", _id: user.id.toString() };
+            return {
+              ...user._doc,
+              password: "",
+              _id: user.id.toString(),
+              categories: categoriesPopulate(user._doc.categories),
+            };
           });
         });
       },
