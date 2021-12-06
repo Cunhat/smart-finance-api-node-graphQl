@@ -35,52 +35,47 @@ const userPopulate = (userId) => {
 };
 
 module.exports = {
-  category: () => {
-    return Category.find()
-      .then((results) => {
-        return results.map((category) => {
-          return {
-            ...category._doc,
-            _id: category.id.toString(),
-            user: userPopulate(category.user._id),
-          };
-        });
-      })
-      .catch((err) => {
-        throw err;
-      });
-  },
-  createCategory: (args) => {
-    const newCategory = new Category({
-      name: args.categoryInput.name,
-      user: userId, //It will be changed when we add authentication
-    });
-    let createCategory;
-    return newCategory
-      .save()
-      .then((result) => {
-        createCategory = {
-          ...result._doc,
-          _id: result.id.toString(),
-          user: userPopulate(result._doc.user),
+  category: async () => {
+    try {
+      const categories = await Category.find();
+      return categories.map((category) => {
+        return {
+          ...category._doc,
+          _id: category.id.toString(),
+          user: userPopulate(category.user._id),
         };
-        return User.findById(userId);
-      })
-      .then((user) => {
-        if (!user) {
-          throw new Error("User doesnt exist");
-        }
-        user.categories.push(createCategory);
-        user.save();
-        return createCategory;
-      })
-      .catch((err) => {
-        console.log(err);
-        throw err;
       });
+    } catch (error) {
+      throw err;
+    }
   },
-  user: () => {
-    return User.find().then((results) => {
+  createCategory: async (args) => {
+    try {
+      const newCategory = new Category({
+        name: args.categoryInput.name,
+        user: userId, //It will be changed when we add authentication
+      });
+      let createCategory;
+      const newCategoryObj = await newCategory.save();
+      createCategory = {
+        ...newCategoryObj._doc,
+        _id: newCategoryObj.id.toString(),
+        user: userPopulate(newCategoryObj._doc.user),
+      };
+      const user = await User.findById(userId);
+      if (!user) {
+        throw new Error("User doesnt exist");
+      }
+      user.categories.push(createCategory);
+      user.save();
+      return createCategory;
+    } catch (error) {
+      throw error;
+    }
+  },
+  user: async () => {
+    try {
+      const results = await User.find();
       return results.map((user) => {
         return {
           ...user._doc,
@@ -89,34 +84,31 @@ module.exports = {
           categories: categoriesPopulate(user._doc.categories),
         };
       });
-    });
+    } catch (error) {
+      throw err;
+    }
   },
-  createUser: (args) => {
-    return User.findOne({ email: args.userInput.email })
-      .then((user) => {
-        if (user) {
-          throw new Error("User already exists");
-        }
-        return bcrypt.hash(args.userInput.password, 12);
-      })
-      .then((hashedPassword) => {
-        const newUser = new User({
-          name: args.userInput.name,
-          email: args.userInput.email,
-          password: hashedPassword,
-        });
-        return newUser.save();
-      })
-      .then((result) => {
-        console.log(result);
-        return {
-          ...result._doc,
-          password: "",
-          _id: result.id.toString(),
-        };
-      })
-      .catch((err) => {
-        throw err;
+  createUser: async (args) => {
+    try {
+      const user = await User.findOne({ email: args.userInput.email });
+      if (user) {
+        throw new Error("User already exists");
+      }
+      const hashedPassword = await bcrypt.hash(args.userInput.password, 12);
+
+      const newUser = new User({
+        name: args.userInput.name,
+        email: args.userInput.email,
+        password: hashedPassword,
       });
+      const result = await newUser.save();
+      return {
+        ...result._doc,
+        password: "",
+        _id: result.id.toString(),
+      };
+    } catch (err) {
+      throw err;
+    }
   },
 };
