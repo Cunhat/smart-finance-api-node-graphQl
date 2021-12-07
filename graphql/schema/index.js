@@ -10,6 +10,7 @@ type Category {
 type SubCategory {
   _id: ID!
   name: String!
+  user: User!
 }
 
 type User {
@@ -18,6 +19,7 @@ type User {
   email: String!
   password: String!
   categories: [Category!]
+  subCategories: [SubCategory!]
 }
 
 type Transaction {

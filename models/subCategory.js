@@ -7,6 +7,7 @@ const subCategorySchema = new Schema({
     type: String,
     required: true,
   },
+  user: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 module.exports = mongoose.model("SubCategory", subCategorySchema);

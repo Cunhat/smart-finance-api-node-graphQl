@@ -16,6 +16,7 @@ const userSchema = new Schema({
     required: true,
   },
   categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
+  subCategories: [{ type: Schema.Types.ObjectId, ref: "subCategories" }],
 });
 
 module.exports = mongoose.model("User", userSchema);
