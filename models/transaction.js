@@ -11,14 +11,13 @@ const transactionSchema = new Schema({
     type: Number,
     required: true,
   },
-  password: {
-    type: String,
-    required: true,
-  },
   date: {
     type: Date,
     required: true,
-  }
+  },
+  user: { type: Schema.Types.ObjectId, ref: "User" },
+  category: { type: Schema.Types.ObjectId, ref: "Category" },
+  subCategory: { type: Schema.Types.ObjectId, ref: "SubCategory" },
 });
 
 module.exports = mongoose.model("Transaction", transactionSchema);

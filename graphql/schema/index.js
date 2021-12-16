@@ -27,6 +27,9 @@ type Transaction {
   name: String!
   value: Float!
   date: String!
+  category: Category!
+  subCategory: SubCategory!
+  user: User!
 }
   
 
@@ -48,6 +51,8 @@ input TransactionInput {
   name: String!
   value: Float!
   date: String!
+  category: ID!
+  subCategory: ID!
 }
 
 type RootQuery {

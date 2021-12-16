@@ -18,11 +18,13 @@ const subCategoriesPopulate = async (subCategoryId) => {
 const categoriesPopulate = async (categoryId) => {
   const categories = await Category.find({ _id: { $in: categoryId } });
   return categories.map((category) => {
-    return {
+    const obj = {
       ...category._doc,
       _id: category._id,
       user: () => userPopulate(category.user),
     };
+
+    return obj;
   });
 };
 
@@ -58,9 +60,24 @@ const subCategoryImp = (subCategory) => {
   };
 };
 
+const transactionImp = async (transaction) => {
+  const user = await userPopulate(transaction.user._id);
+  const category = await categoriesPopulate(transaction.category._id);
+  const subCategory = await subCategoriesPopulate(transaction.subCategory);
+
+  return {
+    ...transaction._doc,
+    _id: transaction.id.toString(),
+    user: user,
+    category: category[0],
+    subCategory: subCategory[0],
+  };
+};
+
 exports.userPopulate = userPopulate;
 exports.categoriesPopulate = categoriesPopulate;
 exports.subCategoriesPopulate = subCategoriesPopulate;
 exports.userId = userId;
 exports.categoryImp = categoryImp;
 exports.subCategoryImp = subCategoryImp;
+exports.transactionImp = transactionImp;
