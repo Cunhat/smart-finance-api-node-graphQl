@@ -20,6 +20,12 @@ module.exports = {
         name: args.subCategoryInput.name,
         user: userId, //It will be changed when we add authentication
       });
+      const checkIfExists = await SubCategory.findOne({
+        name: args.subCategoryInput.name,
+      });
+      if (checkIfExists) {
+        throw new Error("SubCategory already exists");
+      }
       let createSubCategory;
       const newSubCategoryObj = await newSubCategory.save();
       createSubCategory = subCategoryImp(newSubCategoryObj);

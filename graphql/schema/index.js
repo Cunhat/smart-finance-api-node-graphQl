@@ -20,6 +20,7 @@ type User {
   password: String!
   categories: [Category!]
   subCategories: [SubCategory!]
+  transactions: [Transaction!]
 }
 
 type Transaction {

@@ -1,6 +1,7 @@
 const User = require("../../models/user");
 const SubCategory = require("../../models/subCategory");
 const Category = require("../../models/category");
+const Transaction = require("../../models/transaction");
 
 const userId = "61afe0c235a584291c4c2e80";
 
@@ -22,6 +23,19 @@ const categoriesPopulate = async (categoryId) => {
       ...category._doc,
       _id: category._id,
       user: () => userPopulate(category.user),
+    };
+
+    return obj;
+  });
+};
+
+const transactionPopulate = async (transactionId) => {
+  const transactions = await Transaction.find({ _id: { $in: transactionId } });
+  return transactions.map((transaction) => {
+    const obj = {
+      ...transaction._doc,
+      _id: transaction._id,
+      user: () => userPopulate(transaction.user),
     };
 
     return obj;
@@ -77,6 +91,7 @@ const transactionImp = async (transaction) => {
 exports.userPopulate = userPopulate;
 exports.categoriesPopulate = categoriesPopulate;
 exports.subCategoriesPopulate = subCategoriesPopulate;
+exports.transactionPopulate = transactionPopulate;
 exports.userId = userId;
 exports.categoryImp = categoryImp;
 exports.subCategoryImp = subCategoryImp;

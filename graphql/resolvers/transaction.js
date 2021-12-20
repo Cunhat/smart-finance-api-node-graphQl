@@ -2,13 +2,7 @@ const Transaction = require("../../models/transaction");
 const Category = require("../../models/category");
 const SubCategory = require("../../models/subCategory");
 const User = require("../../models/user");
-const {
-  subCategoryImp,
-  categoryImp,
-  userPopulate,
-  userId,
-  transactionImp,
-} = require("./utils");
+const { userId, transactionImp } = require("./utils");
 
 module.exports = {
   transaction: async () => {
@@ -45,15 +39,15 @@ module.exports = {
       let createTransaction;
       const newTransactionObj = await newTransaction.save();
       //console.log(newTransactionObj);
-      createTransaction = transactionImp(newTransactionObj);
-      /* createSubCategory = subCategoryImp(newSubCategoryObj);
+      createTransaction = await transactionImp(newTransactionObj);
       const user = await User.findById(userId);
       if (!user) {
         throw new Error("User doesnt exist");
       }
-      user.subCategories.push(createSubCategory);
+      console.log(user);
+      user.transactions.push(createTransaction);
       user.save();
-      */
+
       return createTransaction;
     } catch (error) {
       throw error;

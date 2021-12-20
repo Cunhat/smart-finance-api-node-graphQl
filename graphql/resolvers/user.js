@@ -1,6 +1,9 @@
-const { categoriesPopulate, subCategoriesPopulate } = require("./utils");
+const {
+  categoriesPopulate,
+  subCategoriesPopulate,
+  transactionPopulate,
+} = require("./utils");
 const User = require("../../models/user");
-const userId = "61afe0c235a584291c4c2e80";
 const bcrypt = require("bcryptjs");
 
 module.exports = {
@@ -14,6 +17,7 @@ module.exports = {
           _id: user.id.toString(),
           categories: () => categoriesPopulate(user._doc.categories),
           subCategories: () => subCategoriesPopulate(user._doc.subCategories),
+          transactions: () => transactionPopulate(user._doc.transactions),
         };
       });
     } catch (error) {

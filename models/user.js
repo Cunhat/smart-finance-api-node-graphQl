@@ -17,6 +17,7 @@ const userSchema = new Schema({
   },
   categories: [{ type: Schema.Types.ObjectId, ref: "Category" }],
   subCategories: [{ type: Schema.Types.ObjectId, ref: "SubCategory" }],
+  transactions: [{ type: Schema.Types.ObjectId, ref: "Transaction" }],
 });
 
 module.exports = mongoose.model("User", userSchema);

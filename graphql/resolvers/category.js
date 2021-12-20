@@ -19,6 +19,12 @@ module.exports = {
         name: args.categoryInput.name,
         user: userId, //It will be changed when we add authentication
       });
+      const checkIfExists = await Category.findOne({
+        name: args.categoryInput.name,
+      });
+      if (checkIfExists) {
+        throw new Error("Category already exists");
+      }
       let createCategory;
       const newCategoryObj = await newCategory.save();
       createCategory = categoryImp(newCategoryObj);
