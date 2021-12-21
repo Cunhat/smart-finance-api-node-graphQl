@@ -39,4 +39,16 @@ module.exports = {
       throw error;
     }
   },
+  updateCategory: async (args) => {
+    try {
+      const { id, ...category } = args.updateCategoryInput;
+      await Category.findByIdAndUpdate(id, {
+        name: category.name,
+      });
+
+      return { _id: id, name: category.name };
+    } catch (error) {
+      throw error;
+    }
+  },
 };

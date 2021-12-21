@@ -40,4 +40,16 @@ module.exports = {
       throw error;
     }
   },
+  updateSubCategory: async (args) => {
+    try {
+      const { id, ...subCategory } = args.updateSubCategoryInput;
+      await SubCategory.findByIdAndUpdate(id, {
+        name: subCategory.name,
+      });
+
+      return { _id: id, name: subCategory.name };
+    } catch (error) {
+      throw error;
+    }
+  },
 };

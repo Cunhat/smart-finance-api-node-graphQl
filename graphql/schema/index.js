@@ -56,6 +56,15 @@ input TransactionInput {
   subCategory: ID!
 }
 
+input UpdateCategoryInput {
+  name: String!
+  id: ID!
+}
+input UpdateSubCategoryInput {
+  name: String!
+  id: ID!
+}
+
 type RootQuery {
     category: [Category!]!
     subCategory: [SubCategory!]!
@@ -68,6 +77,8 @@ type RootMutation {
     createSubCategory(subCategoryInput: SubCategoryInput): SubCategory
     createUser(userInput: UserInput): User
     createTransaction(transactionInput: TransactionInput): Transaction
+    updateCategory(updateCategoryInput: UpdateCategoryInput): Category
+    updateSubCategory(updateSubCategoryInput: UpdateSubCategoryInput): SubCategory
 }
 
 schema {
