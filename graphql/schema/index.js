@@ -32,7 +32,12 @@ type Transaction {
   subCategory: SubCategory!
   user: User!
 }
-  
+
+type AuthData {
+  userId: ID!
+  token: String!
+  tokenExpiration: Int!
+}
 
 input CategoryInput {
   name: String!
@@ -70,6 +75,7 @@ type RootQuery {
     subCategory: [SubCategory!]!
     user: [User!]!
     transaction: [Transaction!]!
+    login(email: String!, password: String!): AuthData!
 }
 
 type RootMutation {

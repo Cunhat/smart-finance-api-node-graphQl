@@ -5,8 +5,12 @@ const User = require("../../models/user");
 const { userId, transactionImp } = require("./utils");
 
 module.exports = {
-  transaction: async () => {
+  transaction: async (args, req) => {
     try {
+      if(!req.isAuth) {
+        throw new Error('Not authenticated!');
+      }
+
       const transactions = await Transaction.find();
       return transactions.map((transaction) => {
         return transactionImp(transaction);
