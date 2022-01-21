@@ -27,7 +27,7 @@ app.use(
 
 mongoose
   .connect(
-    `mongodb+srv://admin:admin@cluster0.a35sh.mongodb.net/smart-finance?retryWrites=true&w=majority`
+    process.env.MONGO_URL
   )
   .then(() => {
     app.listen(process.env.PORT || 8081);
