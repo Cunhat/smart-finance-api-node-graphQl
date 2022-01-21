@@ -30,7 +30,7 @@ mongoose
     `mongodb+srv://admin:admin@cluster0.a35sh.mongodb.net/smart-finance?retryWrites=true&w=majority`
   )
   .then(() => {
-    app.listen(process.env.PORT || 8081);
+    app.listen(8081);
   })
   .catch((err) => {
     console.error(err);
